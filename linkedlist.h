@@ -47,7 +47,9 @@ void insert( LLPtr *sPtr, int value )
       } // end while                                         
 
       // insert new node at beginning of list
-      if ( previousPtr == NULL ) { 
+      if ( previousPtr == NULL ) {
+        if(*sPtr != NULL)
+          (*sPtr)->prevPtr = newPtr;
          newPtr->nextPtr = *sPtr;
          *sPtr = newPtr;
       } // end if
