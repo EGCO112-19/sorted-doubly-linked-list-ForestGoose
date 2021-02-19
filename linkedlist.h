@@ -2,6 +2,7 @@
 struct Node {                                      
    int data; // each listNode contains a character 
    struct Node *nextPtr; // pointer to next node
+   struct Node *prevPtr;//pointer to previous node
 }; // end structure listNode
 typedef struct Node LLnode; // synonym for struct listNode
 typedef LLnode *LLPtr; // synonym for ListNode*                     
@@ -34,6 +35,7 @@ void insert( LLPtr *sPtr, int value )
    if ( newPtr != NULL ) { // is space available
       newPtr->data = value; // place value in node
       newPtr->nextPtr = NULL; // node does not link to another node
+      newPtr->prevPtr = NULL; //node does not link to another node
 
       previousPtr = NULL;
       currentPtr = *sPtr;
@@ -51,7 +53,10 @@ void insert( LLPtr *sPtr, int value )
       } // end if
       else { // insert new node between previousPtr and currentPtr
          previousPtr->nextPtr = newPtr;
+         newPtr->prevPtr = previousPtr;
          newPtr->nextPtr = currentPtr;
+         if(currentPtr != NULL) 
+            currentPtr->prevPtr = newPtr;
       } // end else
    } // end if
    else {
@@ -70,6 +75,8 @@ int deletes( LLPtr *sPtr, int value )
    if ( value == ( *sPtr )->data ) { 
       tempPtr = *sPtr; // hold onto node being removed
       *sPtr = ( *sPtr )->nextPtr; // de-thread the node
+      if(*sPtr != NULL)
+        (*sPtr)->prevPtr = NULL;
       free( tempPtr ); // free the de-threaded node
       return value;
    } // end if
@@ -87,6 +94,8 @@ int deletes( LLPtr *sPtr, int value )
       if ( currentPtr != NULL ) { 
          tempPtr = currentPtr;
          previousPtr->nextPtr = currentPtr->nextPtr;
+         if(currentPtr->nextPtr != NULL)
+            currentPtr->nextPtr->prevPtr = previousPtr;
          free( tempPtr );
          return value;
       } // end if
@@ -112,11 +121,18 @@ void printList( LLPtr currentPtr )
       puts( "The list is:" );
 
       // while not the end of the list
-      while ( currentPtr != NULL ) { 
+      while ( currentPtr->nextPtr != NULL ) { 
          printf( "%d --> ", currentPtr->data );
          currentPtr = currentPtr->nextPtr;   
       } // end while
+      printf("%d --> NULL\n\n", currentPtr->data);
 
-      puts( "NULL\n" );
+      puts( "The list is:" );
+      printf("NULL");
+      while(currentPtr != NULL){
+        printf( " --> %d", currentPtr->data );
+        currentPtr = currentPtr->prevPtr;
+      }
+      puts("\n");
    } // end else
 } // end function printList
